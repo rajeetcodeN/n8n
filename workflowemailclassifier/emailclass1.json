@@ -1,0 +1,1245 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "downloadAttachments": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        -1780,
+        820
+      ],
+      "id": "f2246254-c2eb-4b0d-9e88-a5a0f5f194bf",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "47zgetDlr7nf79Cu",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json[\"category\"]}}",
+                    "rightValue": "hr",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "bb988e36-c702-4b83-8ec1-f4f585f3b411"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "hr"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "06afe4de-1542-46e9-9d57-7775b3b2d185",
+                    "leftValue": "={{$json[\"category\"]}}",
+                    "rightValue": "billing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "billing"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "069fdd96-983f-46a7-a709-863cdbc6384d",
+                    "leftValue": "={{$json[\"category\"]}}",
+                    "rightValue": "complaint",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "complaint"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f3e821fa-8b78-427e-abe4-38ae628624e1",
+                    "leftValue": "={{$json[\"category\"]}}",
+                    "rightValue": "feedback",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "feedback"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "4a46eaa4-e960-4f3b-b23c-b04d9dbb61e0",
+                    "leftValue": "={{$json[\"category\"]}}",
+                    "rightValue": "inquiry",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "inquiry"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f4a3c28e-ca9f-4c7c-aa04-010832d7dab5",
+                    "leftValue": "={{ $json[\"subject\"] }}",
+                    "rightValue": "sales",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "sales"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "263fd3c7-1e12-4b2e-96b2-0b99e713632d",
+                    "leftValue": "={{$json[\"category\"]}}",
+                    "rightValue": "unknown",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "unknown"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -1420,
+        740
+      ],
+      "id": "f6df5d95-fad2-43e5-aaa1-9627d4b0df02",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const subject = $json.subject ? $json.subject.toLowerCase() : \"\";\n\nlet category = \"unknown\";\n\nif (/resume|cv|job/.test(subject)) {\n  category = \"hr\";\n} else if (/invoice|bill/.test(subject)) {\n  category = \"billing\";\n} else if (/complaint|problem|issue/.test(subject)) {\n  category = \"complaint\";\n} else if (/feedback|suggestion/.test(subject)) {\n  category = \"feedback\";\n} else if (/inquiry|open|working|tomorrow|holiday/.test(subject)) {\n  category = \"inquiry\";\n} else if (/sales|offer|quotation/.test(subject)) {\n  category = \"sales\";\n\n}\n\nreturn {\n  json: {\n    ...$json,\n    category\n  }\n};\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1600,
+        820
+      ],
+      "id": "804c7bbb-b704-4f80-8580-972123b7ea81",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an email classifier. Given an email's subject and body, return one of these exact categories: [\"hr\", \"billing\", \"complaint\", \"feedback\", \"inquiry\", \"sales\", \"client\"].\n\nOnly return one word from this list. If the email is a bill or invoice, return \"billing\". If it's a job application, return \"hr\". If unsure, return \"inquiry\".\n\nSubject: {{ $json[\"subject\"] }}\nBody: {{ $json[\"body\"] }}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        -1320,
+        1140
+      ],
+      "id": "314fbd04-f7cb-46a2-847e-5acce75d89eb",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -1300,
+        1300
+      ],
+      "id": "9baf2a56-7e49-4623-b968-3fd9d7fa226b",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "s1tWH0bOqUYH9iHR",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const knownCategories = [\n  \"hr\",\n  \"billing\",\n  \"complaint\",\n  \"feedback\",\n  \"inquiry\",\n  \"sales\",\n  \"client\"\n];\n\nconst response = $json[\"category\"] || $json[\"output\"] || $json[\"text\"] || \"\";  // adapt this based on how your LLM responds\n\nconst normalized = response.trim().toLowerCase();\n\nif (knownCategories.includes(normalized)) {\n  return [{ json: { category: normalized } }];\n} else {\n  return [{ json: { category: \"unknown\" } }];\n}\n\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -820,
+        1260
+      ],
+      "id": "b386243e-7cc4-40b3-a3a8-423fa561bc20",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "inputText": "=\n {{ $json.textPlain }}",
+        "options": {
+          "categories": "Positive, Neutral, Negative"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.sentimentAnalysis",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        820
+      ],
+      "id": "f1095d9e-5378-46b7-b969-fedf27406e43",
+      "name": "Sentiment Analysis",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        940
+      ],
+      "id": "941f5ca0-a3a6-4a52-aa26-872b1b11bc10",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "s1tWH0bOqUYH9iHR",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "=Another happy customer said: \" {{ $json.textPlain }}\"\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        120,
+        680
+      ],
+      "id": "f6206b9d-705a-43bb-868d-cc51558e0529",
+      "name": "X",
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "HKWXIrMtoBUj4UKv",
+          "name": "X account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "demosmern@gmail.com",
+        "toEmail": "rajeet9653@gmail.com",
+        "subject": "sales",
+        "emailFormat": "text",
+        "text": "= Sales Team\n\nFrom: {{$json[\"from\"]}}\nSubject: {{$json[\"subject\"]}}\n\nEmail content:\n{{$json[\"body\"]}}\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -920,
+        1100
+      ],
+      "id": "452674b2-bea6-4ba2-917f-d2d20c94db75",
+      "name": "Send Email2",
+      "webhookId": "d0fbd1fe-eafc-4915-a9d0-699a5676f218",
+      "credentials": {
+        "smtp": {
+          "id": "UnI1gW1Ty54QEFCO",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -600,
+        1160
+      ],
+      "id": "fbe87a82-46e3-4dd8-9a65-5ec3ebe73af1",
+      "name": "Groq Chat Model2",
+      "credentials": {
+        "groqApi": {
+          "id": "s1tWH0bOqUYH9iHR",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an HR assistant.\n\nHere is the job description for the role:\n\n[Insert role details here, e.g., \"Looking for a Python Developer with experience in Django, REST APIs, and SQL.\"]\n\nNow, read the following candidate's email/resume and evaluate if they are a good fit for this role.\n\nIf suitable, respond with:\nACCEPT - and a brief explanation why.\n\nIf not suitable, respond with:\nREJECT - and a brief explanation why.\n\nCandidate's email/resume:\n{{ $json[\"emailText\"] }}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        -1060,
+        340
+      ],
+      "id": "6ffdd6d2-8ed4-4e60-a8cf-a0da6b77504d",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -1080,
+        620
+      ],
+      "id": "6496d288-5e67-4598-8e42-19d96a12664a",
+      "name": "Groq Chat Model3",
+      "credentials": {
+        "groqApi": {
+          "id": "s1tWH0bOqUYH9iHR",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const aiResponse = $json[\"text\"] || \"\";  // Adjust key if different\nconst isAccepted = aiResponse.toLowerCase().startsWith(\"accept\");\n\nreturn [{\n  json: {\n    decision: isAccepted ? \"accept\" : \"reject\",\n    aiResponse: aiResponse,\n    candidateEmail: $json[\"candidateEmail\"] || \"\", // get candidate email from previous nodes\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -680,
+        360
+      ],
+      "id": "0c561010-7267-4641-b199-bf9b35be7ea3",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json[decision] }}",
+                    "rightValue": "accept",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "366a42b8-a4eb-4488-9872-6f1aa097fc48"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "accept"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6146a9fb-3988-4078-af40-4c87840816a9",
+                    "leftValue": "={{ $json[decision] }}",
+                    "rightValue": "reject",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "reject"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -440,
+        300
+      ],
+      "id": "bf75129a-acad-4abd-9005-1b35bbfa724a",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a helpful assistant replying to a customer inquiry via email.\n\nUse the following information retrieved from our documents to generate a clear, professional response.\n\nContext:\n{{ $json[\"vectors\"].map(v => v.metadata.text).join(\"\\n\\n\") || \"No context available.\" }}\n\nCustomer's Question:\n{{ $json[\"emailText\"] }}\n\nRespond with a structured and informative email. Summarize any important points about products, services, or team details. Keep the tone polite and helpful.\n\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        1020
+      ],
+      "id": "bf0b5207-0562-4c1e-9e19-435fcca5a0cc",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "knowlagebase",
+        "toolDescription": "company dock",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "demokb",
+          "mode": "list",
+          "cachedResultName": "demokb"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.1,
+      "position": [
+        -360,
+        1240
+      ],
+      "id": "02c85bbf-fb70-4a55-8753-1767f3eb7d46",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "fDIjc7NK7Gwy9VZC",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "embed-english-v3.0"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsCohere",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        1320
+      ],
+      "id": "5cc4fd67-836e-490e-96a5-539a24c3079b",
+      "name": "Embeddings Cohere",
+      "credentials": {
+        "cohereApi": {
+          "id": "y0f9rsMeJ2KlTj1z",
+          "name": "CohereApi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1720,
+        1780
+      ],
+      "id": "28160b7c-c8f7-4a37-bda2-4b0cebc3dca1",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://www.dropbox.com/scl/fo/p05bb9t8o6ech9d1joj7s/AKJmlI3mlt3O8qSjGbroMLc?rlkey=m1h852ks0y2o1gmdmbk3uda1d&st=pk0pq820&dl=1",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1520,
+        1780
+      ],
+      "id": "8165438a-46c1-4300-952c-3b80c317f121",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -1280,
+        1800
+      ],
+      "id": "70403828-5fbd-44cd-b691-a0d5553eade3",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "\nconst text = $json.extractedText || $json.text || '';\n\n\nconst cleanedText = text.replace(/\\s+/g, ' ').trim();\n\nreturn {\n  json: {\n    original: text,\n    cleaned: cleanedText\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1080,
+        1840
+      ],
+      "id": "d783f2a0-b332-458e-9063-0621b37ebe30",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "demokb",
+          "mode": "list",
+          "cachedResultName": "demokb"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.1,
+      "position": [
+        -860,
+        1860
+      ],
+      "id": "dfb6b8a6-4e57-403f-a15e-5c592f9b8707",
+      "name": "Pinecone Vector Store1",
+      "credentials": {
+        "pineconeApi": {
+          "id": "fDIjc7NK7Gwy9VZC",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "embed-multilingual-v3.0"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsCohere",
+      "typeVersion": 1,
+      "position": [
+        -920,
+        2060
+      ],
+      "id": "a654d6de-d8a2-4b2b-8307-0f383a48c188",
+      "name": "Embeddings Cohere1",
+      "credentials": {
+        "cohereApi": {
+          "id": "y0f9rsMeJ2KlTj1z",
+          "name": "CohereApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        -680,
+        2040
+      ],
+      "id": "8258dfeb-97ad-4093-828c-77fe66da1253",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        -740,
+        2220
+      ],
+      "id": "62a8c04e-150e-4827-a3da-197c1ce35c12",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "fromEmail": "demosmern@gmail.com",
+        "toEmail": "rajeet9653@gmail.com",
+        "subject": "negative feedback",
+        "emailFormat": "text",
+        "text": "=New feedback received:\n\nSubject: {{$json[\"subject\"]}}\n\nContent: {{$json[\"emailContent\"]}}\n\nSentiment: {{$json[\"sentiment\"]}}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        140,
+        900
+      ],
+      "id": "9300ef8b-c2eb-419b-94fc-72c0c8bc10cc",
+      "name": "send email to team",
+      "webhookId": "408004d1-ebdb-4776-a9f8-6a470db658a0",
+      "credentials": {
+        "smtp": {
+          "id": "UnI1gW1Ty54QEFCO",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "=demosmern@gmail.com",
+        "toEmail": "={{ $('Email Trigger (IMAP)').item.json.from }}",
+        "subject": "inqury reply",
+        "emailFormat": "text",
+        "text": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        100,
+        1100
+      ],
+      "id": "35c76adb-e2f9-4beb-b6e1-288f2a804229",
+      "name": "send reply to customer",
+      "webhookId": "bf79c357-f57f-4851-a8bc-c95602e4c069",
+      "credentials": {
+        "smtp": {
+          "id": "UnI1gW1Ty54QEFCO",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "demosmern@gmail.com",
+        "toEmail": "rajeet9653@gmail.com",
+        "subject": "New Customer Complaint Received",
+        "emailFormat": "text",
+        "text": "=\nA new complaint has been received from {{ $json[\"userName\"] || \"a customer\" }}:\n\n\"{{ $json[\"complaintText\"] }}\"\n\nPlease investigate and resolve this\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -300,
+        640
+      ],
+      "id": "3b23e4c1-a17a-4691-b4b9-76349da0a145",
+      "name": "send to support team",
+      "webhookId": "211a9ca3-9768-486e-aad6-fbb52f6d3b2b",
+      "credentials": {
+        "smtp": {
+          "id": "UnI1gW1Ty54QEFCO",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "demosmern@gamil.com",
+        "toEmail": "={{ $json.from }}",
+        "subject": "Complaint Received",
+        "emailFormat": "text",
+        "text": "=We Received Your Complaint\n\nThank you for reaching out to us. We have received your complaint:\n\n\"{{ $json[\"complaintText\"] }}\"\n\nOur team is currently reviewing it and will get back to you as soon as possible.\n\nWe apologize for any inconvenience caused.\n\nFrom , \nCustomer Support Team\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -700,
+        700
+      ],
+      "id": "6e02fbd3-738c-474e-b77f-c306de575b42",
+      "name": "Send to customer",
+      "webhookId": "1ef34921-41bc-4a94-ab3e-2553e5c1758c",
+      "credentials": {
+        "smtp": {
+          "id": "UnI1gW1Ty54QEFCO",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "demosmern@gmail.comj",
+        "toEmail": "={{ $('Email Trigger (IMAP)').item.json.from }}",
+        "subject": "Job Application Status: Not selected",
+        "emailFormat": "text",
+        "text": "=Dear Candidate,\n\nThank you for applying. After review, we regret to inform you that you do not fit the requirements at this time.\n\nDetails: {{$json[\"aiResponse\"]}}\n\nBest regards,\nHR Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -100,
+        380
+      ],
+      "id": "cf013ce4-2fb2-4245-93ea-d4b19e39b0b6",
+      "name": "rejection email",
+      "webhookId": "ea634c6c-305a-499e-8773-d539e8489310",
+      "credentials": {
+        "smtp": {
+          "id": "UnI1gW1Ty54QEFCO",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "demosmern@gmail.com",
+        "toEmail": "rajeet9653@gmail.com",
+        "subject": "=New Candidate Accepted:",
+        "emailFormat": "text",
+        "text": "=Hello HR Team,\n\nCandidate {{$json[\"candidate\"]}} has been accepted with a score of {{$json[\"score\"]}}.\n\nPlease proceed with the next steps.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        120,
+        180
+      ],
+      "id": "e2c9f6fb-e98c-496b-a44f-4345ab70d7ec",
+      "name": "to hr",
+      "webhookId": "1794df4d-7feb-47d6-a8a0-910197e6df62",
+      "credentials": {
+        "smtp": {
+          "id": "UnI1gW1Ty54QEFCO",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "demosmern@gmail.com",
+        "toEmail": "={{ $('Email Trigger (IMAP)').item.json.from }}",
+        "subject": "Job Application Status: Accepted",
+        "emailFormat": "text",
+        "text": "=Dear Candidate,\n\nCongratulations! You have been accepted for the role.\n\nDetails: {{$json[\"aiResponse\"]}}\n\nBest regards,\nHR Team\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -100,
+        200
+      ],
+      "id": "a0acdd5c-aafb-4c59-b2d8-8d184c518fe7",
+      "name": "accepted confirm to candidate",
+      "webhookId": "bc4ad05b-966f-4bf2-bb80-23f996862711",
+      "credentials": {
+        "smtp": {
+          "id": "UnI1gW1Ty54QEFCO",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "demosmern@gamil,com",
+        "toEmail": "rajeet9653@gmail.com",
+        "subject": "NEW BILL",
+        "emailFormat": "text",
+        "text": "=\n\nA new billing email has been received.\n\nFrom: {{$json[\"from\"]}}\nSubject: {{$json[\"subject\"]}}\n\nEmail content:\n{{$json[\"body\"]}}\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -420,
+        480
+      ],
+      "id": "5a2f6292-2c31-4973-b992-723c4cf1fd62",
+      "name": "bill send to team",
+      "webhookId": "91eaac98-671d-4e51-9a36-70a567908385",
+      "credentials": {
+        "smtp": {
+          "id": "UnI1gW1Ty54QEFCO",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "bill send to team",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send to customer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sentiment Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Email2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Sentiment Analysis",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sentiment Analysis": {
+      "main": [
+        [
+          {
+            "node": "X",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "send email to team",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "send email to team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "accepted confirm to candidate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "rejection email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "X": {
+      "main": [
+        []
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "send reply to customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Cohere": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Cohere1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send reply to customer": {
+      "main": [
+        []
+      ]
+    },
+    "Send to customer": {
+      "main": [
+        [
+          {
+            "node": "send to support team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "accepted confirm to candidate": {
+      "main": [
+        [
+          {
+            "node": "to hr",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "b5452eaa-cd11-4204-9e33-1f6b2efb0bf7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4859ba1fafd091e81fa7a542b45bf8a62d209c2684ea12a8f60b33eca6eba6a0"
+  },
+  "id": "RaE3hrJbTpSpQ8cW",
+  "tags": []
+}
